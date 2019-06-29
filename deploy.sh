@@ -2,6 +2,4 @@
 
 set -e
 
-sequelize db:migrate:undo
-sequelize db:migrate
-sequelize db:seed:all
+sequelize db:migrate:undo && db:migrate && db:seed:all
