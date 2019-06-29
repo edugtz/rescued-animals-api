@@ -10,8 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   Animal.associate = function(models) {
     // associations can be defined here
     Animal.hasOne(models.AnimalDetail, {
-      foreignKey: 'todoId',
-      as: 'animalDetails'
+      foreignKey: 'animal_id'
     });
   };
   return Animal;

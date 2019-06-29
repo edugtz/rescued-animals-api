@@ -22,13 +22,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      animalId: {
+      animal_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         onDelete: 'CASCADE',
         references: {
           model: 'Animals',
-          key: 'id',
-          as: 'animalId'
+          key: 'id'
         }
       }
     });
