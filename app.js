@@ -1,6 +1,9 @@
 'use strict';
 
-const port = process.env.PORT || 3000;
+require('dotenv').config();
+
+const port = process.env.PORT || 3030;
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
@@ -8,6 +11,7 @@ const api = require('./routes/index');
 const app = express();
 
 app.use(logger('dev'));
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(bodyParser.json());

@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
   const AnimalDetail = sequelize.define('AnimalDetail', {
     location: DataTypes.STRING,
     publication_date: DataTypes.DATE,
-    animal_id: DataTypes.INTEGER
+    animal_id: DataTypes.INTEGER,
+    picture: DataTypes.STRING
   }, {});
   AnimalDetail.associate = function(models) {
     // associations can be defined here

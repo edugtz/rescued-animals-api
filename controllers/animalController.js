@@ -1,13 +1,11 @@
 'use strict';
 
 const { Animal, AnimalDetail } = require('../db/models');
-// const AnimalDetail = require('../db/models').AnimalDetail;
 
 module.exports = {
     getAnimals(req, res) {
-        // console.log('gets here');
         const include = [
-            { model: AnimalDetail, required: true }
+            { model: AnimalDetail, as: 'animalDetail', required: true }
         ];
 
         return Animal
@@ -20,9 +18,7 @@ module.exports = {
                 return res.status(200).send(animals);
             })
             .catch(err => {
-                // return res.status(400).send(err);
+                return res.status(400).send(err);
             });
-    
-        // return res.status(200).send({ animals });
     }
 };
