@@ -38,7 +38,7 @@ The **app** will start running on `http://localhost:8080`
 The app is intended to work with some Amazon Web Services features, therefore you would need to have the 
 necessary access credentials to be able to run the app properly, but you can always give it a try to the
 deployed version: 
-- [Deployed api](https://rescued-animals-api.herokuapp.com/api/)
+- [https://rescued-animals-api.herokuapp.com/api/](https://rescued-animals-api.herokuapp.com/api/)
 
 ## Route list
 ### Register a new animal
