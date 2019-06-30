@@ -45,6 +45,7 @@ module.exports = {
             });
     },
     registerAnimal(req, res) {
+        console.log('Logging of register');
         const include = [
             { model: AnimalDetail, as: 'animalDetail', required: true }
         ];
@@ -55,8 +56,9 @@ module.exports = {
             projectId: process.env.PROJECT_ID,
             keyFilename: process.env.GC_KEY_FILE
         });
+        console.log(gcs);
         var bucket = gcs.bucket(process.env.BUCKET);
-
+        console.log(bucket);
         bucket.upload('sport.jpg', function(err, file) {
             if (err) throw new Error(err);
             console.log('Upload completed');
