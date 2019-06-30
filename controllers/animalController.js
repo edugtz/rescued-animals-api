@@ -2,9 +2,6 @@
 
 const { Animal, AnimalDetail } = require('../db/models');
 const s3 = require('../helper/s3');
-const fs = require('fs');
-const path = require('path');
-
 
 module.exports = {
     getAnimal(req, res) {
@@ -49,21 +46,23 @@ module.exports = {
             });
     },
     registerAnimal(req, res) {
-        if(!req.body) {
+        const { name, species, breed, age, color, location } = req.body;
+
+        if(!name || !species || !breed || !age || !color || !location) {
             return res.status(400).send({
-                message: 'Fields cannot be empty',
+                message: 'Some of the fields might be missing. Please verify.',
             });
         }
 
         let animalData = req.body;
-        // console.log(req.body.name);
 
         s3.uploadFile(req.file)
             .then(data => {
                 return data.Location;    
             })
             .then(imageUrl => {
-                return Animal.create(animalData)
+                return Animal
+                    .create(animalData)
                     .then(createdAnimal => {
                         const animalDetailData = {
                             publication_date: new Date(),
@@ -72,7 +71,8 @@ module.exports = {
                             picture: imageUrl
                         };
                         
-                        return AnimalDetail.create(animalDetailData)
+                        return AnimalDetail
+                            .create(animalDetailData)
                             .then(animalDetail => {
                                 if(!animalDetail) {
                                     return res.status(400).send({
@@ -87,6 +87,110 @@ module.exports = {
                             .catch(err => {
                                 return res.status(400).send(err);
                             });
+                    });
+            })
+            .catch(err => {
+                return res.status(400).send(err);
+            });
+    },
+    deleteAnimal(req, res) {
+        const { animalId } = req.params;    
+    
+        return Animal
+            .findByPk(animalId)
+            .then(animal => {
+                if(!animal) {
+                    return res.status(404).send({
+                        message: 'Animal not found',
+                    });
+                }
+
+                return animal
+                    .destroy()
+                    .then(() => {
+                        return res.status(200).send({
+                            message: 'Animal was successfully deleted'
+                        });
+                    })
+                    .catch(err => {
+                        return res.status(400).send(err);
+                    });
+                
+            })
+            .catch(err => {
+                return res.status(400).send(err);
+            });
+    },
+    async updateAnimal(req, res) {
+        const { animalId } = req.params;    
+        const include = [
+            { model: AnimalDetail, as: 'animalDetail', required: true }
+        ];
+        let imageToDelete;
+        let newImageUrl;
+        let animalFound;
+
+        return Animal
+            .findByPk(animalId, { include })
+            .then(animal => {
+                if(!animal) {
+                    return res.status(404).send({
+                        message: 'Animal not found',
+                    });
+                }
+
+                imageToDelete = String(animal.animalDetail.picture).toLowerCase().split('.com/').pop();
+                animalFound = animal;  
+            })
+            .then(() => {
+                if(req.file) {
+                    console.log(imageToDelete);
+                    return s3.deleteFile(imageToDelete)
+                        .then(() => {
+                            console.log('gets here');
+                            return s3.uploadFile(req.file)
+                                .then(data => {
+                                    newImageUrl = data.Location;
+                                })
+                                .catch(err => {
+                                    return res.status(400).send(err);
+                                });
+                        })
+                        .catch(err => {
+                            return res.status(400).send(err);
+                        });
+                }
+
+                return true;
+            })
+            .then(() => {
+                const updatedData = req.body;
+
+                return animalFound
+                    .update(updatedData)
+                    .then(() => {
+                        const newAnimalDetailData = {
+                            location: req.body.location
+                        };
+                        if(req.file) {
+                            newAnimalDetailData.picture = newImageUrl;
+                        }
+
+                        console.log(newAnimalDetailData);
+
+                        return animalFound.animalDetail
+                            .update(newAnimalDetailData)
+                            .then(() => {
+                                return res.status(200).send({
+                                    message: 'Successfully updated animal'
+                                });
+                            })
+                            .catch(err => {
+                                return res.status(400).send(err);
+                            });
+                    })
+                    .catch(err => {
+                        return res.status(400).send(err);
                     });
             })
             .catch(err => {

@@ -1,3 +1,5 @@
+'use strict';
+
 const AWS = require('aws-sdk');
 
 class S3 {
@@ -32,6 +34,22 @@ class S3 {
             });
         });
     };
+
+    deleteFile(key) {
+        const params = {
+            Key: key
+        };
+
+        return new Promise((resolve, reject) => {
+            this.s3.deleteObject(params, function(err, data) {
+                if (err) {
+                    reject(err);
+                }
+                
+                resolve(data);
+            });
+        });
+    }
 };
 
 module.exports = new S3();
