@@ -50,18 +50,23 @@ module.exports = {
             { model: AnimalDetail, as: 'animalDetail', required: true }
         ];
 
-        const storage = require('@google-cloud/storage');
+        const { Storage } = require('@google-cloud/storage');
         const fs = require('fs');
-        const gcs = storage({
+        // const gcs = storage({
+        //     projectId: process.env.PROJECT_ID,
+        //     keyFilename: process.env.GC_KEY_FILE
+        // });
+        const gc = new Storage({
             projectId: process.env.PROJECT_ID,
             keyFilename: process.env.GC_KEY_FILE
-        });
-        console.log(gcs);
-        var bucket = gcs.bucket(process.env.BUCKET);
+        })
+        console.log(gc);
+        var bucket = gc.bucket(process.env.BUCKET);
         console.log(bucket);
         bucket.upload('sport.jpg', function(err, file) {
             if (err) throw new Error(err);
             console.log('Upload completed');
+            console.log(file);
         });
         // return Animal
         //     .findAll({ include })
