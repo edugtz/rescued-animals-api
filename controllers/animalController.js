@@ -49,8 +49,18 @@ module.exports = {
             { model: AnimalDetail, as: 'animalDetail', required: true }
         ];
 
-        console.log(req.body);
+        const storage = require('@google-cloud/storage');
+        const fs = require('fs');
+        const gcs = storage({
+            projectId: process.env.PROJECT_ID,
+            keyFilename: process.env.GC_KEY_FILE
+        });
+        var bucket = gcs.bucket(process.env.BUCKET);
 
+        bucket.upload('sport.jpg', function(err, file) {
+            if (err) throw new Error(err);
+            console.log('Upload completed');
+        });
         // return Animal
         //     .findAll({ include })
         //     .then(animals => {
