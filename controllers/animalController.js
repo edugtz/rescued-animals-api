@@ -121,7 +121,7 @@ module.exports = {
                 return res.status(400).send(err);
             });
     },
-    async updateAnimal(req, res) {
+    updateAnimal(req, res) {
         const { animalId } = req.params;    
         const include = [
             { model: AnimalDetail, as: 'animalDetail', required: true }
@@ -175,8 +175,6 @@ module.exports = {
                         if(req.file) {
                             newAnimalDetailData.picture = newImageUrl;
                         }
-
-                        console.log(newAnimalDetailData);
 
                         return animalFound.animalDetail
                             .update(newAnimalDetailData)
