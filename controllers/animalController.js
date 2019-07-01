@@ -95,7 +95,8 @@ module.exports = {
     },
     deleteAnimal(req, res) {
         const { animalId } = req.params;    
-    
+        let imageToDelete;
+
         return Animal
             .findByPk(animalId)
             .then(animal => {
@@ -105,17 +106,24 @@ module.exports = {
                     });
                 }
 
-                return animal
-                    .destroy()
+                imageToDelete = String(animal.animalDetail.picture).toLowerCase().split('.com/').pop();
+
+                return s3.deleteFile(imageToDelete)
                     .then(() => {
-                        return res.status(200).send({
-                            message: 'Animal was successfully deleted'
-                        });
+                        return animal
+                            .destroy()
+                            .then(() => {
+                                return res.status(200).send({
+                                    message: 'Animal was successfully deleted'
+                                });
+                            })
+                            .catch(err => {
+                                return res.status(400).send(err);
+                            });
                     })
                     .catch(err => {
                         return res.status(400).send(err);
                     });
-                
             })
             .catch(err => {
                 return res.status(400).send(err);
