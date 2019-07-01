@@ -33,12 +33,6 @@ module.exports = {
         return Animal
             .findAll({ include })
             .then(animals => {
-                if(animals.length === 0) {
-                    return res.status(404).send({
-                        message: 'No animals found',
-                    });
-                }
-
                 return res.status(200).send(animals);
             })
             .catch(err => {
