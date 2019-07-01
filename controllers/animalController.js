@@ -94,11 +94,15 @@ module.exports = {
             });
     },
     deleteAnimal(req, res) {
-        const { animalId } = req.params;    
+        const { animalId } = req.params;
+        const include = [
+            { model: AnimalDetail, as: 'animalDetail', required: true }
+        ];
+
         let imageToDelete;
 
         return Animal
-            .findByPk(animalId)
+            .findByPk(animalId, { include })
             .then(animal => {
                 if(!animal) {
                     return res.status(404).send({
@@ -107,7 +111,6 @@ module.exports = {
                 }
 
                 imageToDelete = String(animal.animalDetail.picture).toLowerCase().split('.com/').pop();
-
                 return s3.deleteFile(imageToDelete)
                     .then(() => {
                         return animal
