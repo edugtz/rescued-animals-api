@@ -31,7 +31,7 @@ module.exports = {
         ];
 
         return Animal
-            .findAll({ include })
+            .findAll({ order: [ [ 'id', 'ASC' ] ], include })
             .then(animals => {
                 return res.status(200).send(animals);
             })
