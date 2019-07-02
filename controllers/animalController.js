@@ -4,6 +4,7 @@ const { Animal, AnimalDetail } = require('../db/models');
 const s3 = require('../helper/s3');
 
 module.exports = {
+    /* Gets an specific animal */
     getAnimal(req, res) {
         const { animalId } = req.params;
         const include = [
@@ -25,6 +26,7 @@ module.exports = {
                 return res.status(400).send(err);
             });
     },
+    /* Gets the list of current animals */
     getAnimals(req, res) {
         const include = [
             { model: AnimalDetail, as: 'animalDetail', required: true }
@@ -39,6 +41,7 @@ module.exports = {
                 return res.status(400).send(err);
             });
     },
+    /* Create a new animal and upload its picture to S3 */
     registerAnimal(req, res) {
         const { name, species, breed, age, color, location } = req.body;
 
@@ -87,6 +90,7 @@ module.exports = {
                 return res.status(400).send(err);
             });
     },
+    /* Delete an specific animal and its picture from S3 */
     deleteAnimal(req, res) {
         const { animalId } = req.params;
         const include = [
@@ -126,6 +130,7 @@ module.exports = {
                 return res.status(400).send(err);
             });
     },
+    /* Update an existing animal and its picture if user uploads a new one */
     updateAnimal(req, res) {
         const { animalId } = req.params;    
         const include = [

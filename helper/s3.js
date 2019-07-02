@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 
 class S3 {
     constructor() {
-        
+        // Provide credentials with the help of env variables
         const options = {
             params: {
                 Bucket: process.env.S3_BUCKET
@@ -16,6 +16,7 @@ class S3 {
         this.s3 = new AWS.S3(options);
     };
 
+    /* This method uploads an image to the specified S3 bucket */
     uploadFile(file) {
         const params = {
             Key: file.originalname,
@@ -35,6 +36,7 @@ class S3 {
         });
     };
 
+    /* This method deletes a file from the specified S3 bucket */
     deleteFile(key) {
         const params = {
             Key: key

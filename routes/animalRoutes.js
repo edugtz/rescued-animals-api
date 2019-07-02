@@ -6,6 +6,7 @@ const animalController = require('../controllers/animalController');
 const multer = require('multer');
 const upload = multer({});
 
+/* Main animal routes to create, read, update and delete data */
 api.get('/', animalController.getAnimals);
 api.get('/:animalId', animalController.getAnimal);
 api.post('/', upload.single('image'), animalController.registerAnimal);
